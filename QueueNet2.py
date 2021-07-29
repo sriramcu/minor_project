@@ -35,8 +35,11 @@ def main(custom_queue=300):
     def selector2(pkt):
         return pkt.src == "SJSU2"
 
-    ps1 = PacketSink(env, debug=False, rec_arrivals=True, selector=selector)
-    ps2 = PacketSink(env, debug=False, rec_waits=True, selector=selector2)
+    def selector3(pkt):
+        return pkt.src == "SJSU1" or pkt.src == "SJSU2" or pkt.src == "SJSU3"
+
+    ps1 = PacketSink(env, debug=False, rec_arrivals=True, selector=selector3)
+    ps2 = PacketSink(env, debug=False, rec_waits=True, selector=selector3)
     pg1 = PacketGenerator(env, "SJSU1", adist1, sdist)
     pg2 = PacketGenerator(env, "SJSU2", adist2, sdist)
     pg3 = PacketGenerator(env, "SJSU3", adist3, sdist)
@@ -70,8 +73,10 @@ def main(custom_queue=300):
     print("average wait source 2 to output 4 = {}".format(delay2))
     print("packets sent {}".format(pg1.packets_sent + pg2.packets_sent))
     print("packets received: {}".format(len(ps2.waits)))
-    pdrop = (len(ps2.waits) / (pg1.packets_sent + pg2.packets_sent)) * 100
-    pdrop = 100 - pdrop
+    packets_sent = pg1.packets_sent + pg2.packets_sent + pg3.packets_sent
+    packets_received = len(ps1.waits) + len(ps2.waits)
+    pdrop = ((packets_sent-packets_received)/packets_sent) * 100
+
     pdrop = round(pdrop, 2)
     print("Packet drop = {} %".format(pdrop))
 
