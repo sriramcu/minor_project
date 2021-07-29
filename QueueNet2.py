@@ -63,24 +63,29 @@ def main(custom_queue=300):
     switch_port3.out = ps1
     switch_port4.out = ps2
     # Run it
-    env.run(until=4000)
-    print(ps2.waits[-10:])
+    time_slice = 4000
+    env.run(until=time_slice)
+    # print(ps2.waits[-10:])
     # print pm.sizes[-10:]
     # print ps.arrivals[-10:]
     delay1 = sum(ps1.waits) / len(ps1.waits)
-    print("average wait source 1 to output 3 = {}".format(delay1))
     delay2 = sum(ps2.waits) / len(ps2.waits)
-    print("average wait source 2 to output 4 = {}".format(delay2))
-    print("packets sent {}".format(pg1.packets_sent + pg2.packets_sent))
-    print("packets received: {}".format(len(ps2.waits)))
+    print("Delays=", delay1, delay2)
     packets_sent = pg1.packets_sent + pg2.packets_sent + pg3.packets_sent
     packets_received = len(ps1.waits) + len(ps2.waits)
     pdrop = ((packets_sent-packets_received)/packets_sent) * 100
 
     pdrop = round(pdrop, 2)
     print("Packet drop = {} %".format(pdrop))
+    sw_pdrop = switch_port1.packets_drop + switch_port2.packets_drop + switch_port3.packets_drop + switch_port4.packets_drop
+    sw_pdrop = (sw_pdrop/packets_sent)*100
+    print("Switch packet drop = {} %".format(sw_pdrop))
 
-    return delay1, delay2, pdrop
+    throughput = packets_received/time_slice   # not accurate since we are considering number of packets, not their sizes, try port monitor
+    print("Throughput = {}".format(throughput))
+
+
+    return delay1, delay2, pdrop, sw_pdrop, throughput
     # print "average system occupancy: {}".format(float(sum(pm.sizes))/len(pm.sizes))
 
 
