@@ -29,7 +29,7 @@ def main():
             throughputs.append(throughput)
 
     else:
-        bsize = 100  # initial
+        bsize = 10  # initial
         bsizes = []
         for i in range(12):
             delay1, delay2, pdrop, sw_pdrop, throughput = QueueNet2.main(bsize)
@@ -49,7 +49,7 @@ def main():
             else:
                 reward += 20
 
-            bsize += (reward * 50)
+            bsize += (reward * 5)
 
             print("Buffer size is now ", bsize)
             bsizes.append(bsize)
@@ -57,18 +57,16 @@ def main():
     # print(delay1s, delay2s, pdrops, sw_pdrops)
 
     plt.figure(1)
-    plt.title("Delay 1")
-    plt.plot(np.array(bsizes), np.array(delay1s))
-    plt.savefig("delay1.png")
+    plt.title("Delay")
+    plt.plot(np.array(bsizes), np.array(delay1s)+np.array(delay2s))
+    plt.savefig("delay.png")
     plt.show()
 
-
-    plt.figure(2)
-    plt.title("Delay 2")
-    plt.plot(np.array(bsizes), np.array(delay2s))
-    plt.savefig("delay2.png")
-    plt.show()
-
+    #plt.figure(2)
+    #plt.title("Delay 2")
+    #plt.plot(np.array(bsizes), np.array(delay2s))
+    #plt.savefig("delay2.png")
+    #plt.show()
 
     plt.figure(3)
     plt.title("Packet drop %")
