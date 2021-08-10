@@ -2,7 +2,7 @@ import os
 import time
 import matplotlib.pyplot as plt
 
-import QueueNet2
+from utils import QueueNet2
 import numpy as np
 
 
@@ -59,31 +59,31 @@ def main():
     plt.figure(1)
     plt.title("Delay")
     plt.plot(np.array(bsizes), np.array(delay1s)+np.array(delay2s))
-    plt.savefig("delay.png")
+    plt.savefig("graphs/delay.png")
     plt.show()
 
     #plt.figure(2)
     #plt.title("Delay 2")
     #plt.plot(np.array(bsizes), np.array(delay2s))
-    #plt.savefig("delay2.png")
+    #plt.savefig("graphs/delay2.png")
     #plt.show()
 
     plt.figure(3)
     plt.title("Packet drop %")
     plt.plot(np.array(bsizes), np.array(pdrops))
-    plt.savefig("pdrop.png")
+    plt.savefig("graphs/pdrop.png")
     plt.show()
 
     plt.figure(4)
     plt.title("Switch packet drop %")
     plt.plot(np.array(bsizes), np.array(sw_pdrops))
-    plt.savefig("sw_pdrop.png")
+    plt.savefig("graphs/sw_pdrop.png")
     plt.show()
 
     plt.figure(5)
     plt.title("Throughput")
     plt.plot(np.array(bsizes), np.array(throughputs))
-    plt.savefig("throughput.png")
+    plt.savefig("graphs/throughput.png")
     plt.show()
 
 
