@@ -1,49 +1,38 @@
 import QueueNet2
+import constants
+
 
 class environment:
     def __init__(self) -> None:
         self.bsize = 10
         self.pdrops = []
-        self.delay1s = []
-        self.delay2s = []
-        self.sw_pdrops = []
+        self.delays = []
         self.throughputs = []
-        
+        self.delay = constants.INITIAL_DELAY
+        self.pdrop = constants.INITIAL_PDROP
+        self.throughput = constants.INITIAL_THROUGHPUT
 
     def step(self, action):
-
         reward = 0
-        if (self.delay1 + self.delay2) > (self.delay1s[-1]+self.delay2s[-1]):
-            reward -= 10
-        else:
-            reward += 10
 
-        if self.throughput < self.throughputs[-1]:
-            reward -= 20
-        else:
-            reward += 20
+        delay_reward = (self.delays[-1] - self.delay) * constants.DELAY_REWARD
+        pdrop_reward = (self.throughput - self.throughputs[-1]) * constants.PACKET_DROP_REWARD
+        throughput_reward = (self.pdrops[-1] - self.pdrop) * constants.THROUGHPUT_REWARD
 
-        self.bsize += (reward * 5)
-        self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput = QueueNet2.simulate_network(self.bsize)
+        reward = reward + delay_reward + throughput_reward + pdrop_reward
+
+        self.bsize += int(reward * constants.BSIZE_MULTIPLIER)
+        self.delay, self.pdrop, self.throughput = QueueNet2.simulate_network(self.bsize)
+        self.delays.append(self.delay)
         self.pdrops.append(self.pdrop)
-        self.delay1s.append(self.delay1)
-        self.delay2s.append(self.delay2)
-        self.sw_pdrops.append(self.sw_pdrop)
         self.throughputs.append(self.throughput)
         print("Buffer size is now ", self.bsize)
-
-        return [self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput], reward, False, 0
-
-
+        done = False
+        return [self.delay, self.pdrop, self.throughput], reward, done, 0
 
     def reset(self):
-        
-        self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput = QueueNet2.simulate_network(self.bsize)
+        self.delay, self.pdrop, self.throughput = QueueNet2.simulate_network(self.bsize)
+        self.delays.append(self.delay)
         self.pdrops.append(self.pdrop)
-        self.delay1s.append(self.delay1)
-        self.delay2s.append(self.delay2)
-        self.sw_pdrops.append(self.sw_pdrop)
         self.throughputs.append(self.throughput)
-        return [self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput]
-
-
+        return [self.delay, self.pdrop, self.throughput]

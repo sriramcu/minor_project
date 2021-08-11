@@ -7,7 +7,7 @@ Released under the MIT license
 """
 import random
 import functools
-
+import constants
 import simpy
 
 from SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
@@ -63,7 +63,7 @@ def simulate_network(custom_queue=300):
     switch_port3.out = ps1
     switch_port4.out = ps2
     # Run it
-    time_slice = 4000
+    time_slice = constants.TIME_SLICE
     env.run(until=time_slice)
     # print(ps2.waits[-10:])
     # print pm.sizes[-10:]
@@ -74,24 +74,25 @@ def simulate_network(custom_queue=300):
     print("Delay=", delay)
     packets_sent = pg1.packets_sent + pg2.packets_sent + pg3.packets_sent
     packets_received = len(ps1.waits) + len(ps2.waits)
-    pdrop = ((packets_sent-packets_received)/packets_sent) * 100
+    pdrop = ((packets_sent - packets_received) / packets_sent) * 100
 
     pdrop = round(pdrop, 2)
-    print("Packet drop = {} %".format(pdrop))
+    # print("Packet drop = {} %".format(pdrop))
     sw_pdrop = switch_port1.packets_drop + switch_port2.packets_drop + switch_port3.packets_drop + switch_port4.packets_drop
-    sw_pdrop = (sw_pdrop/packets_sent)*100
-    print("Switch packet drop = {} %".format(sw_pdrop))
+    sw_pdrop = (sw_pdrop / packets_sent) * 100
+    # print("Switch packet drop = {} %".format(sw_pdrop))
 
-    throughput = packets_received/time_slice   # not accurate since we are considering number of packets, not their sizes, try port monitor
+    # To avoid confusing RL agent with different packet drop value, take average packet drop
+
+    avg_pdrop = round((pdrop+sw_pdrop)/2, 2)
+    print("Packet drop = {} %".format(avg_pdrop))
+
+    throughput = packets_received / time_slice  # not accurate since we are considering number of packets, not their sizes, try port monitor
     print("Throughput = {}".format(throughput))
 
-
-    return delay1, delay2, pdrop, sw_pdrop, throughput
+    return delay, avg_pdrop, throughput
     # print "average system occupancy: {}".format(float(sum(pm.sizes))/len(pm.sizes))
-
 
 
 if __name__ == '__main__':
     simulate_network(30000)
-
-

@@ -70,9 +70,11 @@ if __name__ == "__main__":
     episodes = constants.EPISODES
     for e in range(episodes):
         state = env.reset()
+        print("EPISODE", e)
         print(state)
         state = np.reshape(state, [1, state_size])
-        for time in range(500):
+        for time in range(constants.NUM_SIMULATIONS):
+            print("Episode", e, "Time", time)
             # env.render()
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
