@@ -90,7 +90,8 @@ def simulate_network(custom_queue=300):
     throughput = packets_received / time_slice  # not accurate since we are considering number of packets, not their sizes, try port monitor
     print("Throughput = {}".format(throughput))
 
-    return delay, avg_pdrop, throughput
+    return delay1,delay2,pdrop,sw_pdrop,throughput
+    #return delay, avg_pdrop, throughput
     # print "average system occupancy: {}".format(float(sum(pm.sizes))/len(pm.sizes))
 
 
