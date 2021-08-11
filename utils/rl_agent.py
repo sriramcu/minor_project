@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import random
+import constants
 from environment import environment
 import numpy as np
 from collections import deque
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
-
-EPISODES = 1000
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
@@ -62,15 +61,14 @@ class DQNAgent:
 
 if __name__ == "__main__":
     env = environment()
-    state_size = 5
-    #print(state_size)
-    action_size = 2
+    state_size = constants.STATE_SIZE
+    action_size = constants.ACTION_SIZE
     agent = DQNAgent(state_size, action_size)
     
     done = False
     batch_size = 32
-
-    for e in range(EPISODES):
+    episodes = constants.EPISODES
+    for e in range(episodes):
         state = env.reset()
         print(state)
         state = np.reshape(state, [1, state_size])
@@ -84,9 +82,7 @@ if __name__ == "__main__":
             state = next_state
             if done:
                 print("episode: {}/{}, score: {}, e: {:.2}"
-                      .format(e, EPISODES, time, agent.epsilon))
+                      .format(e, episodes, time, agent.epsilon))
                 break
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
-        # if e % 10 == 0:
-        #     agent.save("./save/cartpole-dqn.h5")

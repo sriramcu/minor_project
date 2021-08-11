@@ -13,7 +13,7 @@ import simpy
 from SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
 
 
-def main(custom_queue=300):
+def simulate_network(custom_queue=300):
     # Set up arrival and packet size distributions
     # Using Python functools to create callable functions for random variates with fixed parameters.
     # each call to these will produce a new random value.
@@ -70,7 +70,8 @@ def main(custom_queue=300):
     # print ps.arrivals[-10:]
     delay1 = sum(ps1.waits) / len(ps1.waits)
     delay2 = sum(ps2.waits) / len(ps2.waits)
-    print("Delays=", delay1, delay2)
+    delay = delay1 + delay2
+    print("Delay=", delay)
     packets_sent = pg1.packets_sent + pg2.packets_sent + pg3.packets_sent
     packets_received = len(ps1.waits) + len(ps2.waits)
     pdrop = ((packets_sent-packets_received)/packets_sent) * 100
@@ -91,6 +92,6 @@ def main(custom_queue=300):
 
 
 if __name__ == '__main__':
-    main(30000)
+    simulate_network(30000)
 
 

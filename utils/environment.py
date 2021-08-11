@@ -24,13 +24,13 @@ class environment:
             reward += 20
 
         self.bsize += (reward * 5)
-        self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput = QueueNet2.main(self.bsize)
+        self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput = QueueNet2.simulate_network(self.bsize)
         self.pdrops.append(self.pdrop)
         self.delay1s.append(self.delay1)
         self.delay2s.append(self.delay2)
         self.sw_pdrops.append(self.sw_pdrop)
         self.throughputs.append(self.throughput)
-        print("Buffer size is now ", bsize)
+        print("Buffer size is now ", self.bsize)
 
         return [self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput], reward, False, 0
 
@@ -38,7 +38,7 @@ class environment:
 
     def reset(self):
         
-        self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput = QueueNet2.main(self.bsize)
+        self.delay1, self.delay2, self.pdrop, self.sw_pdrop, self.throughput = QueueNet2.simulate_network(self.bsize)
         self.pdrops.append(self.pdrop)
         self.delay1s.append(self.delay1)
         self.delay2s.append(self.delay2)

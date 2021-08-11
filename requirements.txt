@@ -1,0 +1,7 @@
+numpy~=1.19.5
+tensorflow~=2.5.0
+simpy~=4.0.1
+matplotlib~=2.0.2
+gym~=0.18.3
+DateTime~=4.3
+pandas~=0.24.2

@@ -21,7 +21,7 @@ def main():
     if mode == "static":
         bsizes = [100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 1000, 3000, 10000, 20000]
         for bsize in bsizes:
-            delay1, delay2, pdrop, sw_pdrop, throughput = QueueNet2.main(bsize)
+            delay1, delay2, pdrop, sw_pdrop, throughput = QueueNet2.simulate_network(bsize)
             pdrops.append(pdrop)
             delay1s.append(delay1)
             delay2s.append(delay2)
@@ -32,7 +32,7 @@ def main():
         bsize = 10  # initial
         bsizes = []
         for i in range(12):
-            delay1, delay2, pdrop, sw_pdrop, throughput = QueueNet2.main(bsize)
+            delay1, delay2, pdrop, sw_pdrop, throughput = QueueNet2.simulate_network(bsize)
             pdrops.append(pdrop)
             delay1s.append(delay1)
             delay2s.append(delay2)
