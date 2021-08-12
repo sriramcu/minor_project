@@ -7,10 +7,10 @@ Released under the MIT license
 """
 import random
 import functools
-from utils import constants
+import constants
 import simpy
 
-from utils.SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
+from SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
 
 
 def simulate_network(custom_queue=300):
