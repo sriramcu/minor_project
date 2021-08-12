@@ -1,16 +1,13 @@
 """
-Use of SimComponents to simulate the network of queues from Homework #6 problem 1, Fall 2014.
-See corresponding solution set for mean delay calculation based on Burkes theorem.
-
-Copyright 2014 Dr. Greg M. Bernstein
-Released under the MIT license
+    Copyright 2014 Dr. Greg M. Bernstein
+    Released under the MIT license
 """
 import random
 import functools
-from utils import constants
+import constants
 import simpy
 
-from utils.SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
+from SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
 
 
 def simulate_network(custom_queue=300):
