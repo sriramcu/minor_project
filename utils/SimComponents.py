@@ -1,9 +1,8 @@
 """
-    A bit more detailed set of components to use in packet switching
-    queueing experiments.
     Copyright 2014 Greg M. Bernstein
     Released under the MIT license
 """
+
 import simpy
 import random
 import copy

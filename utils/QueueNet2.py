@@ -1,9 +1,6 @@
 """
-Use of SimComponents to simulate the network of queues from Homework #6 problem 1, Fall 2014.
-See corresponding solution set for mean delay calculation based on Burkes theorem.
-
-Copyright 2014 Dr. Greg M. Bernstein
-Released under the MIT license
+    Copyright 2014 Dr. Greg M. Bernstein
+    Released under the MIT license
 """
 import random
 import functools
