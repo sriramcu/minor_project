@@ -83,15 +83,13 @@ def simulate_network(custom_queue=300):
     # print("Switch packet drop = {} %".format(sw_pdrop))
 
     # To avoid confusing RL agent with different packet drop value, take average packet drop
-
     avg_pdrop = round((pdrop+sw_pdrop)/2, 2)
     print("Packet drop = {} %".format(avg_pdrop))
 
     throughput = packets_received / time_slice  # not accurate since we are considering number of packets, not their sizes, try port monitor
     print("Throughput = {}".format(throughput))
 
-    return delay1,delay2,pdrop,sw_pdrop,throughput
-    #return delay, avg_pdrop, throughput
+    return delay, avg_pdrop, throughput
     # print "average system occupancy: {}".format(float(sum(pm.sizes))/len(pm.sizes))
 
 
