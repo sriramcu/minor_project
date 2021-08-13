@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 import constants
-from environment import environment
+from sdnenvironment import SdnEnvironment
 import numpy as np
 from collections import deque
 from tensorflow.keras.models import Sequential
@@ -60,7 +60,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = environment()
+    env = SdnEnvironment()
     state_size = constants.STATE_SIZE
     action_size = constants.ACTION_SIZE
     agent = DQNAgent(state_size, action_size)
@@ -71,7 +71,6 @@ if __name__ == "__main__":
     for e in range(episodes):
         state = env.reset()
         print("EPISODE", e)
-        print(state)
         state = np.reshape(state, [1, state_size])
         for time in range(constants.NUM_SIMULATIONS):
             print("Episode", e, "Time", time)

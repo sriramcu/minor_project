@@ -9,11 +9,21 @@ import simpy
 
 from SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
 
+class NegativeBufferSizeException(Exception):
+    pass
 
 def simulate_network(custom_queue=300):
+    # custom_queue is in bytes
     # Set up arrival and packet size distributions
     # Using Python functools to create callable functions for random variates with fixed parameters.
     # each call to these will produce a new random value.
+
+    if custom_queue <= 0:
+        # todo check if changing buffer size to 1 here would be better than halting the RL agent
+        # raise NegativeBufferSizeException("Buffer size must be a positive value")
+        custom_queue = 1
+
+
     mean_pkt_size = 100.0  # in bytes
     adist1 = functools.partial(random.expovariate, 2.0)
     adist2 = functools.partial(random.expovariate, 0.5)
@@ -68,8 +78,10 @@ def simulate_network(custom_queue=300):
     delay1 = sum(ps1.waits) / len(ps1.waits)
     delay2 = sum(ps2.waits) / len(ps2.waits)
     delay = delay1 + delay2
-    print("Delay=", delay)
+    delay = round(delay * 1000, 2)
+    print("Delay=", delay, "ms")
     packets_sent = pg1.packets_sent + pg2.packets_sent + pg3.packets_sent
+    # print("PACKETS SENT=", packets_sent)
     packets_received = len(ps1.waits) + len(ps2.waits)
     pdrop = ((packets_sent - packets_received) / packets_sent) * 100
 
@@ -91,4 +103,4 @@ def simulate_network(custom_queue=300):
 
 
 if __name__ == '__main__':
-    simulate_network(30000)
+    simulate_network(-1.22)
