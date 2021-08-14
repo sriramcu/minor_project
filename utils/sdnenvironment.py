@@ -9,6 +9,9 @@ class SdnEnvironment:
         self.pdrops = []
         self.delays = []
         self.throughputs = []
+        self.bsizes = []
+        self.headers = []
+        self.lengths = []
 
     def step(self, action):
         # if action is 1 then increase buffer size
@@ -31,15 +34,12 @@ class SdnEnvironment:
             self.bsize -= constants.BSIZE_CHANGE
 
         self.bsize = max(self.bsize, 1)
-        print(delay_reward, pdrop_reward, throughput_reward)
-        print("Reward=", self.reward)
-        print("Action=", action)
-        print("Buffer size is now ", self.bsize)
 
         delay, pdrop, throughput = QueueNet2.simulate_network(self.bsize)
         self.delays.append(delay)
         self.pdrops.append(pdrop)
         self.throughputs.append(throughput)
+        self.bsizes.append(self.bsize)
 
         return [delay, pdrop, throughput], self.reward, done, 0
 
@@ -48,4 +48,20 @@ class SdnEnvironment:
         self.delays.append(delay)
         self.pdrops.append(pdrop)
         self.throughputs.append(throughput)
+        self.bsizes.append(self.bsize)
         return [delay, pdrop, throughput]
+
+    def render(self):
+        if len(self.delays) == 1:
+            self.headers = ["Sl No", "Buffer Size", "Delay", "Packet Drop", "Throughput"]
+            self.lengths = [len(x)+5 for x in self.headers]
+            for i in range(len(self.headers)):
+                print(self.headers[i].ljust(self.lengths[i]), end='')
+            print()
+
+        print(str(len(self.delays)).ljust(self.lengths[0]),  end='')
+        print(str(self.bsizes[-1]).ljust(self.lengths[1]), end='')
+        print(str(self.delays[-1]).ljust(self.lengths[2]), end='')
+        print(str(self.pdrops[-1]).ljust(self.lengths[3]), end='')
+        print(str(self.throughputs[-1]).ljust(self.lengths[4]), end='')
+        print()
