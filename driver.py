@@ -1,69 +1,64 @@
-import os
-import time
-import matplotlib.pyplot as plt
-
-from utils import QueueNet2
+from utils import constants
+from utils.sdnenvironment import SdnEnvironment
+from utils.rl_agent import DQNAgent
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 
 def main():
+    sdn_env = SdnEnvironment()
+    state_size = constants.STATE_SIZE
+    action_size = constants.ACTION_SIZE
+    rl_agent = DQNAgent(state_size, action_size)
 
-    # bsizes = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-    pdrops = []
-    delays = []
-    throughputs = []
-    mode = "dynamic"
-    if mode == "static":
-        bsizes = [100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 1000, 3000, 10000, 20000]
-        for bsize in bsizes:
-            delay, pdrop, throughput = QueueNet2.simulate_network(bsize)
-            pdrops.append(pdrop)
-            delays.append(delay)
-            throughputs.append(throughput)
+    done = False
+    batch_size = 32
+    episodes = constants.EPISODES
+    for e in range(episodes):
+        state = sdn_env.reset()
+        print("EPISODE", e)
+        state = np.reshape(state, [1, state_size])
 
-    else:
-        bsize = 10  # initial
-        bsizes = []
-        for i in range(12):
-            delay, pdrop, throughput = QueueNet2.simulate_network(bsize)
-            pdrops.append(pdrop)
-            delays.append(delay)
-            throughputs.append(throughput)
-            reward = 0
-            if delay > delays[-1]:
-                reward -= 10
-            else:
-                reward += 10
+        for time in range(constants.NUM_SIMULATIONS):
+            sdn_env.render()
+            action = rl_agent.act(state)
+            next_state, reward, done, _ = sdn_env.step(action)
+            reward = reward if not done else -10
+            next_state = np.reshape(next_state, [1, state_size])
+            rl_agent.memorize(state, action, reward, next_state, done)
+            state = next_state
 
-            if throughput < throughputs[-1]:
-                reward -= 20
-            else:
-                reward += 20
+            if done:
+                print("episode: {}/{}, score: {}, e: {:.2}"
+                      .format(e, episodes, time, rl_agent.epsilon))
+                break
+            if len(rl_agent.memory) > batch_size:
+                rl_agent.replay(batch_size)
 
-            bsize += (reward * 5)
+        plt.figure(1)
+        plt.title("Buffer sizes, episode {}".format(e + 1))
+        plt.plot(np.array(sdn_env.bsizes))
+        plt.savefig("graphs/bsizes_episode{}.png".format(e + 1))
+        plt.show()
 
-            print("Buffer size is now ", bsize)
-            bsizes.append(bsize)
+        plt.figure(2)
+        plt.title("Delay, episode {}".format(e+1))
+        plt.plot(np.array(sdn_env.delays))
+        plt.savefig("graphs/delay_episode{}.png".format(e+1))
+        plt.show()
 
-    plt.figure(1)
-    plt.title("Delay")
-    plt.plot(np.array(bsizes), np.array(delays))
-    plt.savefig("graphs/delay.png")
-    plt.show()
+        plt.figure(3)
+        plt.title("Packet drop %, episode {}".format(e+1))
+        plt.plot(np.array(sdn_env.pdrops))
+        plt.savefig("graphs/pdrop_episode{}.png".format(e+1))
+        plt.show()
 
-    plt.figure(2)
-    plt.title("Packet drop %")
-    plt.plot(np.array(bsizes), np.array(pdrops))
-    plt.savefig("graphs/pdrop.png")
-    plt.show()
-
-    plt.figure(3)
-    plt.title("Throughput")
-    plt.plot(np.array(bsizes), np.array(throughputs))
-    plt.savefig("graphs/throughput.png")
-    plt.show()
+        plt.figure(4)
+        plt.title("Throughput, episode {}".format(e+1))
+        plt.plot(np.array(sdn_env.throughputs))
+        plt.savefig("graphs/throughput_episode{}.png".format(e+1))
+        plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
