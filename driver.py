@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    alter_gamma = True
-    alter_initial_bsize = True
+    alter_gamma = False
+    alter_initial_bsize = False
     if alter_gamma:
         gamma_values = np.arange(0.1, 1.0, 0.05)
     else:
@@ -17,7 +17,7 @@ def main():
     if alter_initial_bsize:
         initial_bsizes = [(i*50) for i in range(constants.EPISODES)]
     else:
-        initial_bsizes = [constants.INITIAL_BSIZE for i in range(constants.INITIAL_BSIZE)]
+        initial_bsizes = [constants.INITIAL_BSIZE for i in range(constants.EPISODES)]
 
     for gamma in gamma_values:
         sdn_env = SdnEnvironment()
@@ -85,6 +85,12 @@ def main():
             plt.savefig(os.path.join(results_dir, filename))
             plt.show()
 
+            plt.figure(5)
+            plt.title("Reward, episode {}".format(e+1))
+            plt.plot(np.array(sdn_env.rewards))
+            filename = "reward_episode{}.png".format(e + 1)
+            plt.savefig(os.path.join(results_dir, filename))
+            plt.show()
 
 if __name__ == "__main__":
     main()
