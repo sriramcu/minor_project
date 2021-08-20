@@ -10,8 +10,10 @@ class SdnEnvironment:
         self.delays = []
         self.throughputs = []
         self.bsizes = []
+        self.rewards = []
         self.headers = []
         self.lengths = []
+
 
     def step(self, action):
         # if action is 1 then increase buffer size
@@ -28,10 +30,6 @@ class SdnEnvironment:
         self.reward = self.reward + delay_reward + throughput_reward + pdrop_reward
 
 
-
-        # 1000ms
-        # 2000 ms
-        # self.bsize += int(self.reward * constants.BSIZE_MULTIPLIER)
         if action == 1:
             self.bsize += constants.BSIZE_CHANGE
         else:
@@ -44,6 +42,7 @@ class SdnEnvironment:
         self.pdrops.append(pdrop)
         self.throughputs.append(throughput)
         self.bsizes.append(self.bsize)
+        self.rewards.append(self.reward)
 
         return [delay, pdrop, throughput], self.reward, done, 0
 

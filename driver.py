@@ -7,7 +7,13 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    for gamma in np.arange(0.1, 1.0, 0.05):
+    alter_gamma = True
+    if alter_gamma:
+        gamma_values = np.arange(0.1, 1.0, 0.05)
+    else:
+        gamma_values = [1.0]
+
+    for gamma in gamma_values:
         sdn_env = SdnEnvironment()
         state_size = constants.STATE_SIZE
         action_size = constants.ACTION_SIZE
@@ -44,6 +50,7 @@ def main():
 
             if not os.path.isdir(results_dir):
                 os.makedirs(results_dir)
+
             plt.figure(1)
             plt.title("Buffer sizes, episode {}".format(e + 1))
             plt.plot(np.array(sdn_env.bsizes))
