@@ -27,6 +27,10 @@ class SdnEnvironment:
 
         self.reward = self.reward + delay_reward + throughput_reward + pdrop_reward
 
+
+
+        # 1000ms
+        # 2000 ms
         # self.bsize += int(self.reward * constants.BSIZE_MULTIPLIER)
         if action == 1:
             self.bsize += constants.BSIZE_CHANGE

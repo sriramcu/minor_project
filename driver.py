@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    for gamma in np.arange(0.1,1.0,0.05):
+    for gamma in np.arange(0.1, 1.0, 0.05):
         sdn_env = SdnEnvironment()
         state_size = constants.STATE_SIZE
         action_size = constants.ACTION_SIZE
@@ -37,7 +37,8 @@ def main():
                 if len(rl_agent.memory) > batch_size:
                     rl_agent.replay(batch_size)
 
-            script_dir = "/home/furqan/minor_project/graphs"
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            graphs_dir = os.path.join(script_dir, "graphs")
             results_dir = os.path.join(script_dir, "gamma {}".format(gamma))
             #sample_file_name = "sample"
 
@@ -46,25 +47,29 @@ def main():
             plt.figure(1)
             plt.title("Buffer sizes, episode {}".format(e + 1))
             plt.plot(np.array(sdn_env.bsizes))
-            plt.savefig(results_dir + "/bsizes_episode{}.png".format(e + 1))
+            filename = "bsizes_episode{}.png".format(e+1)
+            plt.savefig(os.path.join(results_dir, filename))
             plt.show()
 
             plt.figure(2)
             plt.title("Delay, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.delays))
-            plt.savefig(results_dir + "/delay_episode{}.png".format(e+1))
+            filename = "delay_episode{}.png".format(e+1)
+            plt.savefig(os.path.join(results_dir, filename))
             plt.show()
 
             plt.figure(3)
             plt.title("Packet drop %, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.pdrops))
-            plt.savefig(results_dir + "/pdrop_episode{}.png".format(e+1))
+            filename = "pdrop_episode{}.png".format(e + 1)
+            plt.savefig(os.path.join(results_dir, filename))
             plt.show()
 
             plt.figure(4)
             plt.title("Throughput, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.throughputs))
-            plt.savefig(results_dir + "/throughput_episode{}.png".format(e+1))
+            filename = "throughput_episode{}.png".format(e + 1)
+            plt.savefig(os.path.join(results_dir, filename))
             plt.show()
 
 
