@@ -8,10 +8,16 @@ import matplotlib.pyplot as plt
 
 def main():
     alter_gamma = True
+    alter_initial_bsize = True
     if alter_gamma:
         gamma_values = np.arange(0.1, 1.0, 0.05)
     else:
         gamma_values = [1.0]
+
+    if alter_initial_bsize:
+        initial_bsizes = [(i*50) for i in range(constants.EPISODES)]
+    else:
+        initial_bsizes = [constants.INITIAL_BSIZE for i in range(constants.INITIAL_BSIZE)]
 
     for gamma in gamma_values:
         sdn_env = SdnEnvironment()
@@ -45,8 +51,8 @@ def main():
 
             script_dir = os.path.dirname(os.path.abspath(__file__))
             graphs_dir = os.path.join(script_dir, "graphs")
-            results_dir = os.path.join(script_dir, "gamma {}".format(gamma))
-            #sample_file_name = "sample"
+            results_dir = os.path.join(graphs_dir, "gamma {}".format(gamma))
+
 
             if not os.path.isdir(results_dir):
                 os.makedirs(results_dir)

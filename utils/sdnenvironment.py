@@ -3,8 +3,8 @@ import constants
 
 
 class SdnEnvironment:
-    def __init__(self) -> None:
-        self.bsize = constants.INITIAL_BSIZE
+    def __init__(self, bsize=constants.INITIAL_BSIZE) -> None:
+        self.bsize = bsize
         self.reward = 0
         self.pdrops = []
         self.delays = []
@@ -52,11 +52,12 @@ class SdnEnvironment:
         self.pdrops.append(pdrop)
         self.throughputs.append(throughput)
         self.bsizes.append(self.bsize)
+        self.rewards.append(self.reward)
         return [delay, pdrop, throughput]
 
     def render(self):
         if len(self.delays) == 1:
-            self.headers = ["Sl No", "Buffer Size", "Delay", "Packet Drop", "Throughput"]
+            self.headers = ["Sl No", "Buffer Size", "Delay", "Packet Drop", "Throughput", "Reward"]
             self.lengths = [len(x)+5 for x in self.headers]
             for i in range(len(self.headers)):
                 print(self.headers[i].ljust(self.lengths[i]), end='')
@@ -67,4 +68,5 @@ class SdnEnvironment:
         print(str(self.delays[-1]).ljust(self.lengths[2]), end='')
         print(str(self.pdrops[-1]).ljust(self.lengths[3]), end='')
         print(str(self.throughputs[-1]).ljust(self.lengths[4]), end='')
+        print(str(self.rewards[-1]).ljust(self.lengths[5]), end='')
         print()
