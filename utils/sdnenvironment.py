@@ -2,6 +2,18 @@ import QueueNet2
 import constants
 
 
+def normalise_delay(delay):
+    return min(delay / constants.MAX_DELAY, 1)
+
+
+def normalise_pdrop(pdrop):
+    return min(pdrop / constants.MAX_PDROP, 1)
+
+
+def normalise_throughput(throughput):
+    return min(throughput / constants.MAX_THROUGHPUT, 1)
+
+
 class SdnEnvironment:
     def __init__(self, bsize=constants.INITIAL_BSIZE) -> None:
         self.bsize = bsize
@@ -20,37 +32,42 @@ class SdnEnvironment:
         delay_reward = 0
         pdrop_reward = 0
         throughput_reward = 0
-
+        relative_reward = True
         if len(self.delays) > 2:
-            # delay_reward = (self.delays[-2] - self.delays[-1]) * constants.DELAY_REWARD_MULTIPLIER
-            # pdrop_reward = (self.throughputs[-1] - self.throughputs[-2]) * constants.PACKET_DROP_REWARD_MULIPLIER
-            # throughput_reward = (self.pdrops[-2] - self.pdrops[-1]) * constants.THROUGHPUT_REWARD_MULTIPLIER
-            if self.delays[-1] > self.delays[-2]:
-                delay_reward = -constants.DELAY_REWARD
+            if relative_reward:
+                delay_reward = (normalise_delay(self.delays[-2]) - normalise_delay(
+                    self.delays[-1])) * constants.DELAY_REWARD
+                throughput_reward = (normalise_throughput(self.throughputs[-1]) - normalise_throughput(
+                    self.throughputs[-2])) * constants.THROUGHPUT_REWARD
+                pdrop_reward = (normalise_pdrop(self.pdrops[-2]) - normalise_pdrop(
+                    self.pdrops[-1])) * constants.PDROP_REWARD
+            else:
+                if self.delays[-1] > self.delays[-2]:
+                    delay_reward = -constants.DELAY_REWARD
 
-            if self.delays[-2] > self.delays[-1]:
-                delay_reward = constants.DELAY_REWARD
+                if self.delays[-2] > self.delays[-1]:
+                    delay_reward = constants.DELAY_REWARD
 
-            if self.delays[-2] == self.delays[-1]:
-                delay_reward = 0
+                if self.delays[-2] == self.delays[-1]:
+                    delay_reward = 0
 
-            if self.pdrops[-1] > self.pdrops[-2]:
-                pdrop_reward = -constants.PDROP_REWARD
+                if self.pdrops[-1] > self.pdrops[-2]:
+                    pdrop_reward = -constants.PDROP_REWARD
 
-            if self.pdrops[-2] > self.pdrops[-1]:
-                pdrop_reward = constants.PDROP_REWARD
+                if self.pdrops[-2] > self.pdrops[-1]:
+                    pdrop_reward = constants.PDROP_REWARD
 
-            if self.pdrops[-2] == self.pdrops[-1]:
-                pdrop_reward = 0
+                if self.pdrops[-2] == self.pdrops[-1]:
+                    pdrop_reward = 0
 
-            if self.throughputs[-1] > self.throughputs[-2]:
-                throughput_reward = constants.THROUGHPUT_REWARD
+                if self.throughputs[-1] > self.throughputs[-2]:
+                    throughput_reward = constants.THROUGHPUT_REWARD
 
-            if self.throughputs[-2] > self.throughputs[-1]:
-                throughput_reward = -constants.THROUGHPUT_REWARD
+                if self.throughputs[-2] > self.throughputs[-1]:
+                    throughput_reward = -constants.THROUGHPUT_REWARD
 
-            if self.throughputs[-2] == self.throughputs[-1]:
-                throughput_reward = 0
+                if self.throughputs[-2] == self.throughputs[-1]:
+                    throughput_reward = 0
 
         self.reward = self.reward + delay_reward + throughput_reward + pdrop_reward
 

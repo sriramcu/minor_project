@@ -53,7 +53,7 @@ def simulate_network(custom_queue=300):
     branch1 = RandomBrancher(env, [0.75, 0.25])
     branch2 = RandomBrancher(env, [0.65, 0.35])
 
-    switch_port1 = SwitchPort(env, port_rate, qlimit=custom_queue)
+    switch_port1 = SwitchPort(env, port_rate, qlimit=custom_queue)  # qlimit is in bytes
     switch_port2 = SwitchPort(env, port_rate, qlimit=custom_queue)
     switch_port3 = SwitchPort(env, port_rate, qlimit=custom_queue)
     switch_port4 = SwitchPort(env, port_rate, qlimit=custom_queue)
@@ -103,4 +103,4 @@ def simulate_network(custom_queue=300):
 
 
 if __name__ == '__main__':
-    simulate_network(-1.22)
+    print(simulate_network(10))

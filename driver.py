@@ -12,7 +12,7 @@ def main():
     if alter_gamma:
         gamma_values = np.arange(0.1, 1.0, 0.05)
     else:
-        gamma_values = [1.0]
+        gamma_values = [0.45]
 
     if alter_initial_bsize:
         initial_bsizes = [(i*50) for i in range(constants.EPISODES)]
