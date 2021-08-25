@@ -4,10 +4,15 @@ from utils.sdnenvironment import SdnEnvironment
 from utils.rl_agent import DQNAgent
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import pandas as pd
 
 
 def main():
-    alter_gamma = False
+    alter_gamma = True
+    if len(sys.argv) == 2 and sys.argv[1] == 'demo':
+        # Colab demo
+        alter_gamma = False
     alter_initial_bsize = False
     if alter_gamma:
         gamma_values = np.arange(0.1, 1.0, 0.05)
@@ -18,6 +23,13 @@ def main():
         initial_bsizes = [(i*50) for i in range(constants.EPISODES)]
     else:
         initial_bsizes = [constants.INITIAL_BSIZE for i in range(constants.EPISODES)]
+
+    data = {'Gamma':[],
+            'Min Delay':[], 'Max Delay':[], 'Avg Delay':[], 'StdDev Delay':[],
+            'Min Throughput': [], 'Max Throughput': [], 'Avg Throughput': [], 'StdDev Throughput': [],
+            'Min Packet Drop': [], 'Max Packet Drop': [], 'Avg Packet Drop': [], 'StdDev Packet Drop': [],
+            'Min Reward': [], 'Max Reward': [], 'Avg Reward': [], 'StdDev Reward': []
+            }
 
     for gamma in gamma_values:
         sdn_env = SdnEnvironment()
@@ -57,40 +69,64 @@ def main():
             if not os.path.isdir(results_dir):
                 os.makedirs(results_dir)
 
+
+            data["Gamma"].append(gamma)
             plt.figure(1)
             plt.title("Buffer sizes, episode {}".format(e + 1))
             plt.plot(np.array(sdn_env.bsizes))
             filename = "bsizes_episode{}.png".format(e+1)
             plt.savefig(os.path.join(results_dir, filename))
-            plt.show()
+            # plt.show()
+
 
             plt.figure(2)
             plt.title("Delay, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.delays))
             filename = "delay_episode{}.png".format(e+1)
             plt.savefig(os.path.join(results_dir, filename))
-            plt.show()
+            # plt.show()
+            data["Min Delay"].append(min(sdn_env.delays))
+            data["Max Delay"].append(max(sdn_env.delays))
+            data["Avg Delay"].append(np.average(sdn_env.delays))
+            data["StdDev Delay"].append(np.std(sdn_env.delays))
 
             plt.figure(3)
             plt.title("Packet drop %, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.pdrops))
             filename = "pdrop_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
-            plt.show()
+            # plt.show()
+            data["Min Packet Drop"].append(min(sdn_env.pdrops))
+            data["Max Packet Drop"].append(max(sdn_env.pdrops))
+            data["Avg Packet Drop"].append(np.average(sdn_env.pdrops))
+            data["StdDev Packet Drop"].append(np.std(sdn_env.pdrops))
 
             plt.figure(4)
             plt.title("Throughput, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.throughputs))
             filename = "throughput_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
-            plt.show()
+            # plt.show()
+            data["Min Throughput"].append(min(sdn_env.throughputs))
+            data["Max Throughput"].append(max(sdn_env.throughputs))
+            data["Avg Throughput"].append(np.average(sdn_env.throughputs))
+            data["StdDev Throughput"].append(np.std(sdn_env.throughputs))
 
             plt.figure(5)
             plt.title("Reward, episode {}".format(e+1))
             plt.plot(np.array(sdn_env.rewards))
             filename = "reward_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
-            plt.show()
+            # plt.show()
+            data["Min Reward"].append(min(sdn_env.rewards))
+            data["Max Reward"].append(max(sdn_env.rewards))
+            data["Avg Reward"].append(np.average(sdn_env.rewards))
+            data["StdDev Reward"].append(np.std(sdn_env.rewards))
+
+    df = pd.DataFrame(data)
+    print(df)
+    df.to_csv('gamma_analysis.csv', encoding='utf-8', index=False)
+
 
 if __name__ == "__main__":
     main()
