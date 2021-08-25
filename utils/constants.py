@@ -2,7 +2,8 @@ STATE_SIZE = 3
 ACTION_SIZE = 2
 EPISODES = 1
 TIME_SLICE = 4000
-NUM_SIMULATIONS = 400  # number of simulations per episode
+DEMO_SIMULATIONS = 100
+NUM_SIMULATIONS = 270  # number of simulations per episode
 
 # Assumed network average values to start,
 # do not assume extreme values
