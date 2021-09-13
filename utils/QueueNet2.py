@@ -9,8 +9,10 @@ import simpy
 
 from SimComponents import PacketGenerator, PacketSink, SwitchPort, RandomBrancher
 
+
 class NegativeBufferSizeException(Exception):
     pass
+
 
 def simulate_network(custom_queue=300):
     # custom_queue is in bytes
@@ -23,24 +25,23 @@ def simulate_network(custom_queue=300):
         # raise NegativeBufferSizeException("Buffer size must be a positive value")
         custom_queue = 1
 
-
     mean_pkt_size = 100.0  # in bytes
     adist1 = functools.partial(random.expovariate, 2.0)
     adist2 = functools.partial(random.expovariate, 0.5)
     adist3 = functools.partial(random.expovariate, 0.6)
     sdist = functools.partial(random.expovariate, 1.0 / mean_pkt_size)
-    samp_dist = functools.partial(random.expovariate, 0.50)
+    # sample_dist = functools.partial(random.expovariate, 0.50)
     port_rate = 2.2 * 8 * mean_pkt_size  # want a rate of 2.2 packets per second
 
     # Create the SimPy environment. This is the thing that runs the simulation.
     env = simpy.Environment()
 
     # Create the packet generators and sink
-    def selector(pkt):
-        return pkt.src == "SJSU1"
-
-    def selector2(pkt):
-        return pkt.src == "SJSU2"
+    # def selector(pkt):
+    #     return pkt.src == "SJSU1"
+    #
+    # def selector2(pkt):
+    #     return pkt.src == "SJSU2"
 
     def selector3(pkt):
         return pkt.src == "SJSU1" or pkt.src == "SJSU2" or pkt.src == "SJSU3"
@@ -92,7 +93,7 @@ def simulate_network(custom_queue=300):
     # print("Switch packet drop = {} %".format(sw_pdrop))
 
     # To avoid confusing RL agent with different packet drop value, take average packet drop
-    avg_pdrop = round((pdrop+sw_pdrop)/2, 2)
+    avg_pdrop = round((pdrop + sw_pdrop) / 2, 2)
     # print("Packet drop = {} %".format(avg_pdrop))
 
     throughput = packets_received / time_slice  # not accurate since we are considering number of packets, not their sizes, try port monitor

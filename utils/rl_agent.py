@@ -1,6 +1,4 @@
 import random
-import constants
-from sdnenvironment import SdnEnvironment
 import numpy as np
 from collections import deque
 from tensorflow.keras.models import Sequential
@@ -9,7 +7,7 @@ from tensorflow.keras.optimizers import Adam
 
 
 class DQNAgent:
-    def __init__(self, state_size, action_size,gamma):
+    def __init__(self, state_size, action_size, gamma):
         self.state_size = state_size
         self.action_size = action_size
         self.memory = deque(maxlen=2000)
@@ -57,5 +55,3 @@ class DQNAgent:
 
     def save(self, name):
         self.model.save_weights(name)
-
-

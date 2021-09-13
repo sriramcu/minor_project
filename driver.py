@@ -15,17 +15,19 @@ def main():
         # Colab demo
         alter_gamma = False
         demo_mode = True
+        print("Demo Mode")
 
     alter_initial_bsize = False
     if alter_gamma:
         gamma_values = np.arange(0.1, 1.0, 0.15)
+        # gamma_values = [0.7, 0.4, 0.85]
     else:
         gamma_values = [0.7]
 
     if alter_initial_bsize:
         initial_bsizes = [(i * 50) for i in range(constants.EPISODES)]
     else:
-        initial_bsizes = [constants.INITIAL_BSIZE for i in range(constants.EPISODES)]
+        initial_bsizes = [constants.INITIAL_BSIZE for _ in range(constants.EPISODES)]
 
     data = {'Gamma': [],
             'Min Delay': [], 'Max Delay': [], 'Avg Delay': [], 'StdDev Delay': [],
@@ -40,7 +42,6 @@ def main():
         action_size = constants.ACTION_SIZE
         rl_agent = DQNAgent(state_size, action_size, gamma)
 
-        done = False
         batch_size = 32
         episodes = constants.EPISODES
 
@@ -69,7 +70,11 @@ def main():
 
             script_dir = os.path.dirname(os.path.abspath(__file__))
             graphs_dir = os.path.join(script_dir, "graphs")
+
             results_dir = os.path.join(graphs_dir, "gamma {}".format(gamma))
+
+            if demo_mode:
+                results_dir = os.path.join(graphs_dir, "demo")
 
             if not os.path.isdir(results_dir):
                 os.makedirs(results_dir)
@@ -88,7 +93,8 @@ def main():
             plt.plot(np.array(sdn_env.delays))
             filename = "delay_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
-            # plt.show()
+            if demo_mode:
+                plt.show()
             data["Min Delay"].append(min(sdn_env.delays))
             data["Max Delay"].append(max(sdn_env.delays))
             data["Avg Delay"].append(np.average(sdn_env.delays))
@@ -101,6 +107,8 @@ def main():
             filename = "pdrop_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
             # plt.show()
+            if demo_mode:
+                plt.show()
             data["Min Packet Drop"].append(min(sdn_env.pdrops))
             data["Max Packet Drop"].append(max(sdn_env.pdrops))
             data["Avg Packet Drop"].append(np.average(sdn_env.pdrops))
@@ -113,6 +121,8 @@ def main():
             filename = "throughput_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
             # plt.show()
+            if demo_mode:
+                plt.show()
             data["Min Throughput"].append(min(sdn_env.throughputs))
             data["Max Throughput"].append(max(sdn_env.throughputs))
             data["Avg Throughput"].append(np.average(sdn_env.throughputs))
@@ -125,6 +135,8 @@ def main():
             filename = "reward_episode{}.png".format(e + 1)
             plt.savefig(os.path.join(results_dir, filename))
             # plt.show()
+            if demo_mode:
+                plt.show()
             data["Min Reward"].append(min(sdn_env.rewards))
             data["Max Reward"].append(max(sdn_env.rewards))
             data["Avg Reward"].append(np.average(sdn_env.rewards))
