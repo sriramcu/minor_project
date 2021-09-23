@@ -37,6 +37,7 @@ def main():
             }
 
     for gamma in gamma_values:
+        print("Gamma={}".format(gamma))
         sdn_env = SdnEnvironment()
         state_size = constants.STATE_SIZE
         action_size = constants.ACTION_SIZE

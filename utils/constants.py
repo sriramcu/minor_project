@@ -1,9 +1,9 @@
 STATE_SIZE = 3
 ACTION_SIZE = 2
-EPISODES = 1
+EPISODES = 2
 TIME_SLICE = 4000
 DEMO_SIMULATIONS = 75
-NUM_SIMULATIONS = 270  # number of simulations per episode
+NUM_SIMULATIONS = 350  # number of simulations per episode
 
 # Assumed network average values to start,
 # do not assume extreme values
@@ -12,7 +12,7 @@ INITIAL_DELAY = 5000
 INITIAL_PDROP = 20
 INITIAL_THROUGHPUT = 100
 INITIAL_BSIZE = 250
-# Rewards for the simpler absolute change system
+# Rewards
 DELAY_REWARD = 60
 PDROP_REWARD = 0
 THROUGHPUT_REWARD = 40
